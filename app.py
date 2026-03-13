@@ -13,7 +13,8 @@ from core.rag import RAGSystem
 from core.agent import Agent
 
 load_dotenv()
-
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+OPENWEATHERMAP_KEY = os.getenv("OPENWEATHERMAP_KEY")
 app = FastAPI(title="AI智能助手")
 
 # 挂载静态文件
