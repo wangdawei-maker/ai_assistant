@@ -311,11 +311,39 @@ header h1::after {
 /* 输入区域 */
 .input-area {
     display: flex;
+    flex-direction: column;
     padding: 12px 14px 14px;
     background: rgba(15, 23, 42, 0.96);
     border-top: 1px solid rgba(31, 41, 55, 0.9);
     gap: 10px;
+}
+
+.rag-mode-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.rag-mode-bar select {
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(55, 65, 81, 0.9);
+    background: rgba(15, 23, 42, 0.9);
+    color: #e5e7eb;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
     align-items: flex-end;
+}
+
+.input-row textarea {
+    flex: 1;
 }
 
 textarea {
@@ -416,30 +444,120 @@ button:active {
     }
 }
 
-/* 响应式 */
+/* ========== 移动端适配 ========== */
 @media (max-width: 640px) {
     body {
-        padding: 12px;
+        padding: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        align-items: stretch;
     }
 
     .app {
-        border-radius: 18px;
+        max-width: none;
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+        border-radius: 0;
+        /* 刘海屏安全区 */
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
     }
 
-    .chat-container {
-        height: calc(100vh - 140px);
-    }
-
-    .content {
-        max-width: 80%;
-        font-size: 13px;
+    header {
+        padding: 12px 16px 10px;
+        padding-top: max(12px, env(safe-area-inset-top));
     }
 
     header h1 {
         font-size: 18px;
     }
 
+    header h1::after {
+        font-size: 10px;
+        padding: 2px 5px;
+    }
+
     .subtitle {
         display: none;
+    }
+
+    .chat-container {
+        height: calc(100vh - 120px);
+        height: calc(100dvh - 120px);
+        min-height: 280px;
+    }
+
+    .messages {
+        padding: 12px 14px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .message {
+        margin-bottom: 12px;
+        gap: 8px;
+    }
+
+    .avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+
+    .content {
+        max-width: 85%;
+        font-size: 14px;
+        padding: 10px 12px;
+        line-height: 1.5;
+    }
+
+    /* 输入区：触控友好 */
+    .input-area {
+        padding: 10px 14px 12px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    .rag-mode-bar {
+        font-size: 12px;
+    }
+
+    .rag-mode-bar select {
+        min-height: 36px;
+        padding: 6px 10px;
+        font-size: 14px; /* 避免 iOS 输入框聚焦放大 */
+    }
+
+    .input-row {
+        gap: 8px;
+    }
+
+    .input-row textarea {
+        min-height: 44px;
+        font-size: 16px; /* 避免 iOS 聚焦时自动缩放 */
+        padding: 10px 12px;
+    }
+
+    .input-row button {
+        min-width: 56px;
+        min-height: 44px;
+        padding: 0 16px;
+    }
+
+    .tool-status {
+        font-size: 11px;
+        padding: 6px 14px;
+    }
+}
+
+/* 超小屏（如竖屏小手机） */
+@media (max-width: 380px) {
+    header h1 {
+        font-size: 16px;
+    }
+
+    .content {
+        max-width: 88%;
+        font-size: 13px;
     }
 }

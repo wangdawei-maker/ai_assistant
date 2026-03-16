@@ -2,7 +2,8 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0f172a">
     <title>AI智能助手</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
@@ -26,14 +27,23 @@
             </div>
             
             <div class="input-area">
-                <textarea 
-                    id="userInput" 
-                    placeholder="输入你的问题..."
-                    rows="1"
-                ></textarea>
-                <button id="sendBtn">
-                    <span>发送</span>
-                </button>
+                <div class="rag-mode-bar">
+                    <label for="ragMode">文档问答模式：</label>
+                    <select id="ragMode" title="仅影响涉及文档/政策等问题的回答方式">
+                        <option value="basic">基础 RAG</option>
+                        <option value="advanced">高级 RAG（混合检索+重排序）</option>
+                    </select>
+                </div>
+                <div class="input-row">
+                    <textarea 
+                        id="userInput" 
+                        placeholder="输入你的问题..."
+                        rows="1"
+                    ></textarea>
+                    <button id="sendBtn">
+                        <span>发送</span>
+                    </button>
+                </div>
             </div>
             
             <div class="tool-status" id="toolStatus"></div>
