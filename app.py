@@ -1,5 +1,5 @@
 # app.py
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, UploadFile, File
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from core.llm import DeepSeekLLM
 from core.rag import RAGSystem
 from core.agent import Agent
+from core.table_visualizer import TableVisualizer
 
 load_dotenv()
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
@@ -33,6 +34,7 @@ try:
 except Exception as e:
     print("⚠️ 高级RAG加载失败，仅使用基础RAG:", e)
 agent = Agent(llm=llm)
+table_visualizer = TableVisualizer()
 
 # 对话历史
 conversations = []
@@ -97,6 +99,46 @@ def route_message(message, rag_mode="basic"):
         return result, "rag(基础)"
     result = llm.chat_with_prompt(message)
     return result, None
+
+@app.post("/api/table_viz")
+async def table_viz(request: Request):
+    """
+    表格可视化接口：根据用户问题为指定数据文件生成图表/统计信息。
+
+    请求体示例：
+    {
+      "file_path": "docs/testcsv.csv",
+      "query": "画一下销售额趋势"
+    }
+    """
+    data = await request.json()
+    file_path = data.get("file_path")
+    query = data.get("query", "").strip()
+
+    if not file_path or not query:
+        raise HTTPException(status_code=400, detail="file_path 和 query 不能为空")
+
+    result = table_visualizer.answer_with_chart(file_path, query)
+    return JSONResponse(result)
+
+@app.post("/api/upload_table")
+async def upload_table(file: UploadFile = File(...)):
+    """
+    上传表格文件（CSV / Excel），保存到 static/uploads 目录，并返回可视化可用的相对路径。
+    """
+    upload_dir = os.path.join("static", "uploads")
+    os.makedirs(upload_dir, exist_ok=True)
+
+    filename = file.filename
+    save_path = os.path.join(upload_dir, filename)
+
+    with open(save_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+
+    # 返回给前端用于 table_viz 的路径
+    relative_path = save_path.replace("\\", "/")
+    return {"file_path": relative_path}
 
 @app.get("/api/history")
 async def get_history():
